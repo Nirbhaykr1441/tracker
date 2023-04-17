@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Task List</title>
+	<style>
+
+        /* Styles for the task list */
+#taskList {
+  margin-top: 20px;
+  padding: 0;
+}
+
+/* Styles for the "Add Task" button */
+form button[type="submit"] {
+  background-color: #2d4059;
+  color: #fff;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form button[type="submit"]:hover {
+  background-color: #1d2d44;
+}
+
+/* Styles for the remove button */
+li button {
+  background-color: #e63946;
+  color: #fff;
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+  transition: background-color 0.3s ease;
+}
+
+li button:hover {
+  background-color: #c72525;
+}
+
+/* Styles for the completed task */
+li.completed {
+  opacity: 0.5;
+}
+
+/* Styles for the form */
+form {
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+form label {
+  flex-basis: 100%;
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+form input[type="text"] {
+  flex-basis: 70%;
+  margin-right: 10px;
+}
+
+form button[type="submit"] {
+  flex-basis: 20%;
+}
+
+/* Styles for the header */
+header {
+  font-size: 24px;
+  padding: 40px 20px;
+}
+
+header h1 {
+  margin: 0;
+}
+
+/* Styles for the container */
+.container {
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 40px auto;
+  padding: 20px;
+}
+
+@media only screen and (max-width: 600px) {
+  /* Styles for small screens */
+  form input[type="text"] {
+    flex-basis: 60%;
+    margin-right: 0;
+  }
+
+  form button[type="submit"] {
+    flex-basis: 40%;
+  }
+}
+
+		.completed {
+			text-decoration: line-through;
+			color: gray;
+		}
+	</style>
+
+    
+</head>
+<body onload="loadTasks()">
+	<h1>Task List</h1>
+	<form onsubmit="addTask(); return false;">
+		<label for="newTask">New Task:</label>
+		<input type="text" id="newTask" name="newTask">
+		<button type="submit">Add Task</button>
+	</form>
+	<ul id="taskList">
+	</ul>
+	<script>
+		function addTask() {
+			var task = document.getElementById("newTask").value;
+			if (task === "") {
+				alert("Task cannot be empty!");
+				return;
+			}
+
+			var dateTime = new Date().toLocaleString();
+			var taskWithDateTime = `${task} (${dateTime})`;
+
+			var taskList = document.getElementById("taskList");
+			var taskItem = document.createElement("li");
+			taskItem.innerText = taskWithDateTime;
+			taskItem.setAttribute("onclick", "toggleCompleted(this)");
+
+			var removeButton = document.createElement("button");
+			removeButton.innerText = "Remove";
+			removeButton.setAttribute("onclick", "removeTask(this)");
+			taskItem.appendChild(removeButton);
+
+			taskList.appendChild(taskItem);
+
+			saveTasks();
+		}
+
+		function toggleCompleted(taskItem) {
+			taskItem.classList.toggle("completed");
+			saveTasks();
+		}
+
+		function removeTask(removeButton) {
+			var taskItem = removeButton.parentNode;
+			taskItem.remove();
+			saveTasks();
+		}
+
+		function saveTasks() {
+			var taskList = document.getElementById("taskList");
+			localStorage.setItem("taskListHTML", taskList.innerHTML);
+		}
+
+		function loadTasks() {
+			var taskListHTML = localStorage.getItem("taskListHTML");
+			if (taskListHTML) {
+				var taskList = document.getElementById("taskList");
+				taskList.innerHTML = taskListHTML;
+				for (var i = 0; i < taskList.children.length; i++) {
+					var taskItem = taskList.children[i];
+					taskItem.setAttribute("onclick", "toggleCompleted(this)");
+
+					var removeButton = document.createElement("button");
+					removeButton.innerText = "Remove";
+					removeButton.setAttribute("onclick", "removeTask(this)");
+					taskItem.appendChild(removeButton);
+				}
+			}
+		}
+	</script>
+</body>
+</html>
+
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Daily Log</title>
+    <style>
+      /* Body styles */
+      /* Set background color and font family */
+body {
+  background-color: #186282;
+  font-family: Arial, sans-serif;
+}
+
+/* Set style for container */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #a26464;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Set style for heading */
+h1 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Set style for input field */
+input[type="text"] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 2px solid #f4f4f4;
+  font-size: 18px;
+  background-color: hsl(0, 12%, 93%);
+}
+
+/* Set style for submit button */
+input[type="submit"] {
+  background-color: #4CAF50;
+  color: #9d2828;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Set style for completed tasks */
+.completed {
+  color: #2487a2;
+  text-decoration: line-through;
+}
+
+/* Set style for task list */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+/* Set style for task list items */
+li {
+  border-bottom: 1px solid #ddd;
+  padding: 12px 20px;
+  font-size: 18px;
+}
+
+/* Set style for date */
+.date {
+  color: #5b15f1;
+  font-size: 14px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #2a0e0e;
+  }
+  
+  /* Header styles */
+  header {
+    background-color: #2d4059;
+    color: rgb(109, 22, 22);
+    padding: 20px;
+    text-align: center;
+  }
+  
+  h1 {
+    margin: 0;
+  }
+  
+  /* Main content styles */
+  .container {
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 20px;
+  }
+  
+  /* Form styles */
+  form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  }
+  
+  form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  form input[type="text"],
+  form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  form button[type="submit"] {
+    background-color: #2d4059;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  /* Log styles */
+  .log-container {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  }
+  
+  .log-container h2 {
+    margin-top: 0;
+  }
+  
+  .log-container ul {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .log-container li {
+    list-style: none;
+    margin-bottom: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  .log-container .date {
+    font-weight: bold;
+    color: #888;
+    font-size: 14px;
+  }
+  /* Add your CSS styles here */
+
+
+  /* Styles for the task list */
+#taskList {
+  margin-top: 20px;
+  padding: 0;
+}
+
+/* Styles for the "Add Task" button */
+form button[type="submit"] {
+  background-color: #2d4059;
+  color: #fff;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form button[type="submit"]:hover {
+  background-color: #1d2d44;
+}
+
+/* Styles for the remove button */
+li button {
+  background-color: #e63946;
+  color: #fff;
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+  transition: background-color 0.3s ease;
+}
+
+li submit-button:hover {
+  background-color: #c72525;
+}
+
+/* Styles for the completed task */
+li.completed {
+  opacity: 0.5;
+}
+
+/* Styles for the form */
+form {
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+form label {
+  flex-basis: 100%;
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+form input[type="text"] {
+  flex-basis: 70%;
+  margin-right: 10px;
+}
+
+form button[type="submit"] {
+  flex-basis: 20%;
+  color: #654caf;
+}
+
+/* Styles for the header */
+header {
+  font-size: 24px;
+  padding: 40px 20px;
+}
+
+header h1 {
+  margin: 0;
+}
+
+/* Styles for the container */
+.container {
+  background-color: #e38989;
+  box-shadow: 0 0 10px rgba(6, 1, 1, 0.1);
+  margin: 40px auto;
+  padding: 20px;
+}
+
+@media only screen and (max-width: 600px) {
+  /* Styles for small screens */
+  form input[type="text"] {
+    flex-basis: 60%;
+    margin-right: 0;
+    color: #333333;
+  }
+
+  form button[type="submit"] {
+    flex-basis: 40%;
+    color: #4CAF50;
+  }
+}
+
+
+
+
+
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      .header {
+        background-color: #333333;
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+      }
+      h1 {
+        margin: 0;
+      }
+      .form-container {
+        background-color: #f2f2f2;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      form label,
+      form input[type="submit"] {
+        display: block;
+        margin-bottom: 10px;
+      }
+      form input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        color: #333333;
+      }
+      form input[type="submit"] {
+        background-color: #4CAF50;
+        color: hwb(0 27% 69%);
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        padding: 10px;
+      }
+      form input[type="submit"]:hover {
+        background-color: #45a049;
+      }
+      .completed-work-container {
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+      }
+      .completed-work-container h2 {
+        margin-top: 0;
+      }
+      .completed-work-container ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      .completed-work-container li {
+        margin-bottom: 10px;
+      }
+      .completed-work-container .date {
+        font-size: 12px;
+        color: #999;
+      }
+
+
+/* Styles for the task list */
+#taskList {
+  margin-top: 20px;
+  padding: 0;
+}
+
+/* Styles for the "Add Task" button */
+form button[type="submit"] {
+  background-color: #2d4059;
+  color: #ffffff;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form button[type="submit"]:hover {
+  background-color: #1d2d44;
+}
+
+/* Styles for the remove button */
+li button[type = "submit"] {
+  background-color: #e63946;
+  color: hsl(0, 0%, 100%);
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+  transition: background-color 0.3s ease;
+}
+
+li button:hover {
+  background-color: #76c725;
+}
+
+/* Styles for the completed task */
+li.completed {
+  opacity: 0.5;
+}
+
+/* Styles for the form */
+form {
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+form label {
+  flex-basis: 100%;
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+form input[type="text"] {
+  flex-basis: 70%;
+  margin-right: 10px;
+}
+
+form button[type="submit"] {
+  flex-basis: 20%;
+}
+
+/* Styles for the header */
+header {
+  font-size: 24px;
+  padding: 40px 20px;
+}
+
+header h1 {
+  margin: 0;
+}
+
+/* Styles for the container */
+.container {
+  background-color:  hsl(25, 39%, 49%);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 40px auto;
+  padding: 20px;
+}
+
+@media only screen and (max-width: 600px) {
+  /* Styles for small screens */
+  form input[type="text"] {
+    flex-basis: 60%;
+    margin-right: 0;
+  }
+
+  form button[type="submit"] {
+    flex-basis: 40%;
+    color: #5a3fab;
+  }
+}
+
+
+
+
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Daily Log</h1>
+      <form>
+        <label for="work">Today's Work:</label><br />
+        <textarea id="work" name="work" rows="5" cols="30"></textarea><br />
+        <button id="submit-btn" type="button">Submit</button>
+      </form>
+      <h2>Completed Work</h2>
+      <ul id="completed-work"></ul>
+    </div>
+    <script>
+      // Load completed work from local storage
+      window.addEventListener("load", () => {
+        const completedWork = localStorage.getItem("completedWork");
+        if (completedWork) {
+          const completedWorkList = document.getElementById("completed-work");
+          completedWorkList.innerHTML = completedWork;
+        }
+      });
+
+      // Save completed work to local storage
+      const submitBtn = document.getElementById("submit-btn");
+      submitBtn.addEventListener("click", () => {
+        const workInput = document.getElementById("work");
+        const completedWorkList = document.getElementById("completed-work");
+        const currentDate = new Date().toLocaleDateString();
+        const newWorkItem = document.createElement("li");
+        newWorkItem.innerHTML = `<span class="date">${currentDate}</span><span class="work">${workInput.value}</span>`;
+        completedWorkList.prepend(newWorkItem);
+        localStorage.setItem("completedWork", completedWorkList.innerHTML);
+        workInput.value = "";
+      });
+    </script>
+  </body>
+</html>
